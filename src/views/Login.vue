@@ -3,12 +3,12 @@
 		<p class="error-msg">
 			{{ message }}
 		</p>
-		<LoginForm @submit:account="loginAccount" />
+		<LoginForm @submit:admin="loginAdmin" />
 	</div>
 </template>
 <script>
 	import LoginForm from "@/components/LoginForm.vue";
-	import AccountService from "@/services/account.service";
+	import adminService from "@/services/admin.service";
 	export default {
 		components: {
 			LoginForm,
@@ -19,11 +19,11 @@
 			};
 		},
 		methods: {
-			async loginAccount(data) {
+			async loginAdmin(data) {
 				try {
-					const result = await AccountService.login(data);
+					const result = await adminService.login(data);
 					this.message = "Đăng nhập thành công.";
-					localStorage.setItem("id_user", result?._id);
+					localStorage.setItem("isAdmin", result?._id);
 					this.$router.push("/");
 				} catch (error) {
 					this.message = error.response.data?.message;

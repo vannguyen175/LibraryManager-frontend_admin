@@ -1,124 +1,97 @@
 <template>
-	<div style="margin-bottom: 30px;">
-		<div id="carouselExampleIndicators" class="carousel slide" style="margin-top: 5px">
-			<div class="carousel-indicators">
-				<button
-					type="button"
-					data-bs-target="#carouselExampleIndicators"
-					data-bs-slide-to="0"
-					class="active"
-					aria-current="true"
-					aria-label="Slide 1"
-				></button>
-				<button
-					type="button"
-					data-bs-target="#carouselExampleIndicators"
-					data-bs-slide-to="1"
-					aria-label="Slide 2"
-				></button>
-				<button
-					type="button"
-					data-bs-target="#carouselExampleIndicators"
-					data-bs-slide-to="2"
-					aria-label="Slide 3"
-				></button>
+	<div v-if="isAdmin">
+		<div class="container d-flex justify-content-between" style="padding: 0">
+			<div class="left inner-content" style="padding: 20px">
+				<p class="title">Quản lý</p>
+				<div><ButtonManager @clicked="onClickButtonManager" /></div>
 			</div>
-			<div class="carousel-inner">
-				<div class="carousel-item active">
-					<img src="../assets/SlideHome1.jpg" class="d-block w-100" alt="..." />
+			<div class="right inner-content" style="padding: 20px">
+				<div class="btn-right">
+					<p class="title" v-if="buttonActive == 'muonsach'">Quản lý Mượn sách</p>
+					<p class="title" v-else-if="buttonActive == 'taikhoan'">Quản lý Tài khoản</p>
+					<p class="title" v-else-if="buttonActive == 'nhanvien'">Quản lý Nhân viên</p>
+					<p class="title" v-else-if="buttonActive == 'sach'">Quản lý Sách</p>
+					<p class="title" v-else-if="buttonActive == 'nhaxuatban'">
+						Quản lý Nhà xuất bản
+					</p>
 				</div>
-				<div class="carousel-item">
-					<img src="../assets/SlideHome2.jpg" class="d-block w-100" alt="..." />
-				</div>
-				<div class="carousel-item">
-					<img src="../assets/SlideHome3.jpg" class="d-block w-100" alt="..." />
-				</div>
-				<div class="carousel-item">
-					<img src="../assets/SlideHome4.jpg" class="d-block w-100" alt="..." />
-				</div>
-			</div>
-			<button
-				class="carousel-control-prev"
-				type="button"
-				data-bs-target="#carouselExampleIndicators"
-				data-bs-slide="prev"
-			>
-				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				<span class="visually-hidden">Previous</span>
-			</button>
-			<button
-				class="carousel-control-next"
-				type="button"
-				data-bs-target="#carouselExampleIndicators"
-				data-bs-slide="next"
-			>
-				<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				<span class="visually-hidden">Next</span>
-			</button>
-		</div>
-		<div class="inner-content">
-			<p class="title ps-3">Sách mới thêm</p>
-			<div class="d-flex">
-				<div v-for="(book, index) in books" :key="index">
-					<!-- Truyền mỗi cuốn sách vào BookCard -->
-					<BookCard :book="book" />
+				<div>
+					<div v-if="buttonActive == 'muonsach'"><BorrowManager /></div>
+					<div v-if="buttonActive == 'taikhoan'"><UserManager /></div>
+					<div v-if="buttonActive == 'nhanvien'"><AdminManager /></div>
+					<div v-if="buttonActive == 'sach'"><BookManager /></div>
+					<div v-if="buttonActive == 'nhaxuatban'"><PublisherManager /></div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<div v-else>
+		Cần đăng nhập để sử dụng chức năng của Quản trị viên.
+		<router-link style="text-decoration: underline" class="nav-link" :to="'/login'"
+			>Đăng nhập</router-link
+		>
+	</div>
 </template>
 
 <script>
-	import BookCard from "@/components/BookCard.vue";
-	import bookService from "@/services/book.service";
+	import ButtonManager from "@/components/ButtonManager.vue";
+	import BorrowManager from "@/components/BorrowManager.vue";
+	import AdminManager from "@/components/AdminManager.vue";
+	import UserManager from "@/components/UserManager.vue";
+	import BookManager from "@/components/BookManager.vue";
+	import PublisherManager from "@/components/PublisherManager.vue";
 	export default {
 		components: {
-			BookCard,
+			ButtonManager,
+			BorrowManager,
+			AdminManager,
+			UserManager,
+			BookManager,
+			PublisherManager,
 		},
 		data() {
 			return {
-				books: [],
-				activeIndex: -1,
+				buttonActive: "muonsach",
+				isAdmin: false,
 			};
 		},
-		computed: {
-			contactStrings() {
-				return this.contacts.map((contact) => {
-					const { name, email, address, phone } = contact;
-					return [name, email, address, phone].join("");
-				});
-			},
-			dataBook() {
-				if (this.activeIndex < 0) return null;
-				return this.filteredContacts[this.activeIndex];
-			},
-		},
-
 		methods: {
-			async getAllBooks() {
-				try {
-					const books = await bookService.getAll();
-					console.log("getAllBooks", books[0]);
-					this.books = books;
-				} catch (error) {
-					console.log(error);
-				}
-			},
-			refreshList() {
-				this.getAllBooks();
-				this.activeIndex = -1;
+			onClickButtonManager(value) {
+				this.buttonActive = value;
 			},
 		},
 		mounted() {
-			console.log("mounted");
-			this.refreshList();
+			const isAdmin = localStorage.getItem("isAdmin");
+			this.buttonActive = localStorage.getItem("btnActive") || "muonsach";
+			if (isAdmin != undefined) {
+				this.isAdmin = true;
+			}
 		},
 	};
 </script>
 
 <style lang="scss">
-	.banner {
-		width: 100%;
-		margin-top: 0;
+	.left {
+		width: 20%;
+		padding: 20px;
+		.btn-right {
+			text-align: center;
+			margin-top: 20px;
+			.manager-btn {
+				width: 90%;
+				border: 1px solid gray;
+				border-radius: 8px;
+				margin: 5px auto;
+				font-weight: 500;
+				padding: 6px 0;
+				transition: 0.2s ease-in;
+			}
+			.active {
+				background-color: var(--color-primary);
+			}
+		}
+	}
+	.right {
+		width: 79%;
 	}
 </style>

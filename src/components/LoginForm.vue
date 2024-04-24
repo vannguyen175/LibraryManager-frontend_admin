@@ -3,21 +3,21 @@
 		class="container-xl"
 		@submit="submitLogin"
 		@submit.prevent
-		:validation-schema="accountFormSchema"
-		style="height: 85vh; background-color: white;"
+		:validation-schema="adminFormSchema"
+		style="height: 85vh; background-color: white"
 	>
 		<div class="form shadow" style="margin-top: 20px">
 			<p class="title text-center">Đăng nhập tài khoản</p>
 			<p class="text-center">Điền thông tin để truy cập vào hệ thống</p>
 
-			<label for="tentaikhoan">Tên tài khoản</label>
+			<label for="dienthoai">Số điện thoại</label>
 			<Field
-				name="tentaikhoan"
-				type="text"
+				name="dienthoai"
+				type="phone"
 				class="form-control"
-				v-model="accountLocal.tentaikhoan"
+				v-model="adminLocal.dienthoai"
 			/>
-			<ErrorMessage name="tentaikhoan" class="error-feedback" />
+			<ErrorMessage name="dienthoai" class="error-feedback" />
 
 			<div class="form-group">
 				<label for="matkhau">Mật khẩu</label>
@@ -25,17 +25,11 @@
 					name="matkhau"
 					type="password"
 					class="form-control"
-					v-model="accountLocal.matkhau"
+					v-model="adminLocal.matkhau"
 				/>
 				<ErrorMessage name="matkhau" class="error-feedback" />
 			</div>
-			<p>
-				Chưa đăng ký tài khoản?
-				<router-link :to="'/register'" style="color: var(--color-primary); margin: 10px 0"
-					>Đăng ký</router-link
-				>
-			</p>
-			<div style="text-align: center">
+			<div style="text-align: center; margin-top: 50px">
 				<button class="button-style">Đăng nhập</button>
 			</div>
 		</div>
@@ -50,29 +44,25 @@
 			Field,
 			ErrorMessage,
 		},
-		emits: ["submit:account"],
+		emits: ["submit:admin"],
 		props: {},
 		data() {
-			const accountFormSchema = yup.object().shape({
-				tentaikhoan: yup
-					.string()
-					.required("Tên phải có giá trị.")
-					.min(2, "Tên phải ít nhất 2 ký tự.")
-					.max(50, "Tên có nhiều nhất 50 ký tự."),
+			const adminFormSchema = yup.object().shape({
+				dienthoai: yup.number().required("Số điện thoại phải có giá trị."),
 				matkhau: yup.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự."),
 			});
 			return {
-				accountLocal: {
+				adminLocal: {
 					// Khởi tạo dữ liệu mặc định cho form đăng ký
-					tentaikhoan: "",
+					dienthoai: "",
 					matkhau: "",
 				},
-				accountFormSchema,
+				adminFormSchema,
 			};
 		},
 		methods: {
 			submitLogin() {
-				this.$emit("submit:account", this.accountLocal); //truyền accountLocal lên parent
+				this.$emit("submit:admin", this.adminLocal); //truyền accountLocal lên parent
 			},
 		},
 	};

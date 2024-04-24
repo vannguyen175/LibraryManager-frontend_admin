@@ -1,7 +1,7 @@
 import createApiClient from "./api.service";
 
-class BookService {
-	constructor(baseUrl = "/api/book") {
+class PublisherService {
+	constructor(baseUrl = "/api/publisher") {
 		this.api = createApiClient(baseUrl);
 	}
 	async getAll() {
@@ -21,4 +21,4 @@ class BookService {
 	}
 }
 
-export default new BookService();
+export default new PublisherService();

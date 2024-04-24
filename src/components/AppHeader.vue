@@ -10,21 +10,19 @@
 	>
 		<div class="container-xl" style="background-color: white">
 			<router-link class="navbar-brand fw-bold fs-5 text-dark" :to="'/'"
-				>Ứng dụng Quản lý mượn sách</router-link
+				>Quản lý mượn sách Quản trị viên</router-link
 			>
-			<form class="d-flex" style="width: 500px">
+			<form class="d-flex" style="width: 300px">
 				<div
 					class="navbar-nav d-flex justify-content-between"
-					style="width: 500px; padding: 10px 0; background-color: white"
+					style="width: 400px; padding: 10px 0; background-color: white"
 				>
 					<p class="nav-item" style="background-color: white">
 						<router-link class="nav-link" :to="'/'">Trang chủ</router-link>
 					</p>
+
 					<p class="nav-item" style="background-color: white">
-						<a class="nav-link" href="#">Thư viện</a>
-					</p>
-					<p class="nav-item" style="background-color: white">
-						<a class="nav-link" href="#">Tài khoản</a>
+						<router-link class="nav-link" :to="'/account'">Tài khoản</router-link>
 					</p>
 
 					<p v-if="isLoggedIn" class="nav-item" style="background-color: white">
@@ -43,15 +41,15 @@
 		methods: {
 			logout() {
 				console.log("logout");
-				localStorage.removeItem("id_user");
-				if (!localStorage.removeItem("id_user")) {
+				localStorage.removeItem("isAdmin");
+				if (!localStorage.removeItem("isAdmin")) {
 					this.$router.push("/login");
 				}
 			},
 		},
 		computed: {
 			isLoggedIn() {
-				return localStorage.getItem("id_user") !== null; //đã login
+				return localStorage.getItem("isAdmin") !== null; //đã login
 			},
 		},
 	};
